@@ -1,9 +1,6 @@
 package com.tayaba.simplestudyviewer.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -31,6 +28,9 @@ public class Patient {
 
     @NotNull
     private Date dateOfBirth;
+
+    @OneToOne
+    private Study study;
 
     public long getId() {
         return id;
@@ -70,5 +70,13 @@ public class Patient {
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public Study getStudy() {
+        return study;
+    }
+
+    public void setStudy(Study study) {
+        this.study = study;
     }
 }

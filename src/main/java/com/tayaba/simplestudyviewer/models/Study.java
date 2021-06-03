@@ -3,10 +3,7 @@ package com.tayaba.simplestudyviewer.models;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -25,15 +22,15 @@ public class Study {
     @Size(max = 200)
     private String studyDescription;
 
-    @NotNull
     @CreationTimestamp
     private Date studyCreationTime;
 
-    @NotNull
     @UpdateTimestamp
     private Date studyUpdateTime;
 
-    @OneToOne
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private Patient patient;
 
     public long getId() {

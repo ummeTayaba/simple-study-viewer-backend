@@ -7,16 +7,14 @@ import com.tayaba.simplestudyviewer.web.validators.PatientValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class PatientController {
 
     @Autowired
@@ -41,7 +39,7 @@ public class PatientController {
 
         if(result.hasErrors()){
 
-            throw new ApiValidationException(result.getAllErrors());
+            throw new ApiValidationException(result.getFieldErrors());
         }
         return patientRepository.save(patient);
     }
@@ -51,10 +49,10 @@ public class PatientController {
 
         if(result.hasErrors()){
 
-            throw new ApiValidationException(result.getAllErrors());
+            throw new ApiValidationException(result.getFieldErrors());
         }
-            return patientRepository.save(patient);
 
+        return patientRepository.save(patient);
     }
 
     @RequestMapping(value = "/patients/{id}", method = RequestMethod.DELETE)
@@ -67,10 +65,7 @@ public class PatientController {
             return patient.get();
         }
 
-        List<ObjectError> errorList=new ArrayList<>();
-        errorList.add(new ObjectError(id.toString(),"Not found"));
-        throw new ApiValidationException(errorList);
-
+        throw new EmptyResultDataAccessException(1);
     }
 
 
