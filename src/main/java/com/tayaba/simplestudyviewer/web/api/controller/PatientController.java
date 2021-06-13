@@ -1,16 +1,20 @@
 package com.tayaba.simplestudyviewer.web.api.controller;
 
+import com.tayaba.simplestudyviewer.dto.PatientDto;
 import com.tayaba.simplestudyviewer.models.Patient;
 import com.tayaba.simplestudyviewer.utils.exceptions.ApiValidationException;
 import com.tayaba.simplestudyviewer.web.api.repositories.PatientRepository;
+import com.tayaba.simplestudyviewer.web.api.service.PatientService;
 import com.tayaba.simplestudyviewer.web.validators.PatientValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 @RestController
@@ -22,6 +26,9 @@ public class PatientController {
 
     @Autowired
     private PatientValidator validator;
+
+    @Autowired
+    private PatientService patientService;
 
     @InitBinder
     void initStudentValidator(WebDataBinder binder) {
@@ -35,24 +42,24 @@ public class PatientController {
     }
 
     @RequestMapping(value = "/patients", method = RequestMethod.POST)
-    public Patient addPatient(@Valid @RequestBody Patient patient, BindingResult result) {
+    public Patient addPatient(@Valid @RequestBody PatientDto patient, BindingResult result) {
 
         if(result.hasErrors()){
 
             throw new ApiValidationException(result.getFieldErrors());
         }
-        return patientRepository.save(patient);
+        return patientService.savePatient(patient);
     }
 
-    @RequestMapping(value = "/patients", method = RequestMethod.PATCH)
-    public Patient updatePatient(@Valid @RequestBody Patient patient, BindingResult result) {
+    @RequestMapping(value = "/patients/{id}", method = RequestMethod.POST)
+    public Patient updatePatient(@Valid @RequestBody PatientDto patient, BindingResult result) {
 
         if(result.hasErrors()){
 
             throw new ApiValidationException(result.getFieldErrors());
         }
 
-        return patientRepository.save(patient);
+        return patientService.updatePatient(patient);
     }
 
     @RequestMapping(value = "/patients/{id}", method = RequestMethod.DELETE)
@@ -68,5 +75,16 @@ public class PatientController {
         throw new EmptyResultDataAccessException(1);
     }
 
+    @RequestMapping(value = "/patients/{id}", method = RequestMethod.GET)
+    public Patient getPatient(@PathVariable("id") Long id) {
+        Optional<Patient> patient = patientRepository.findById(id);
+
+        if (patient.isPresent()) {
+
+            return patient.get();
+        }
+
+        throw new EmptyResultDataAccessException(1);
+    }
 
 }

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PatientRepository extends CrudRepository<Patient, Long> {
 
-    public boolean existsPatientByPersonCode(String personCode);
+    boolean existsPatientByPersonCode(String personCode);
 }
